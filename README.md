@@ -1,2 +1,0 @@
-# pdfjs
-pdfjs-revised
