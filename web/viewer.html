@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!--
 Copyright 2012 Mozilla Foundation
 
@@ -92,27 +92,26 @@ See https://github.com/adobe-type-tools/cmap-resources
         }
       }
     </script>
-    <script src="viewer.js" type="module"></script>
-    <script >
-    
-      window.addEventListener('message', (event) => {
-
-        if (event.origin !== "https://jienote.top") {
-          return;
+    <script>
+    window.addEventListener('message', function(event) {
+      console.log('收到消息:', event.data);
+      if (event.data.type === 'save') {
+        if (window.PDFViewerApplication) {
+          window.PDFViewerApplication.download(event.data);
+        } else {
+          window.parent.postMessage(
+          {
+            type: "save-fail",
+            err: 'PDFViewerApplication is not initialized'
+          },
+          "*");
         }
-        if (event.data.type === 'save') {
-          if (window.PDFViewerApplication) {
-            window.PDFViewerApplication.download(event.data);
-          } else {
-            window.parent.postMessage(
-              { type: "save-fail", err: "PDFViewerApplication 未初始化" },
-              "https://jienote.top" // 必须和发送方一致
-            );
-          }
-        }
-      });
+      }
+      // 这里你可以调用 PDF.js viewer API，比如切换页码等
+    });
     </script>
-  <!--#endif-->
+    <script src="viewer.js" type="module"></script>
+<!--#endif-->
 
   </head>
 
