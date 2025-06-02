@@ -16,6 +16,7 @@
 /** @typedef {import("./interfaces").IDownloadManager} IDownloadManager */
 
 import { createValidAbsoluteUrl, isPdfFile } from "pdfjs-lib";
+import axios from 'axios';
 
 if (typeof PDFJSDev !== "undefined" && !PDFJSDev.test("CHROME || GENERIC")) {
   throw new Error(
@@ -105,49 +106,70 @@ class DownloadManager {
     return false;
   }
 
-  download(data, url, filename, message) {
-  if (!data) {
-    console.error("No data provided for upload.");
-    return;
-  }
+   download(data, url, filename, message) {
+   if (!data) {
+     console.error("No data provided for upload.");
+     return;
+   }
 
-  const pdf_file = new FormData();
-  pdf_file.append("article", data);
+   const blob = new Blob([data], { type: 'application/octet-stream' });   
+   const pdf_file = new FormData();
+   pdf_file.append("article", blob);
+   pdf_file.append("article_id", message.articleId);
 
-  fetch("https://jienote.top/article/annotateSelfArticle" + "?article_id=" + message.articleId, {
-    method: "POST",
-    headers: {
-      Authorization:'Bearer ' + message.token,
-      
-    },
-    body: pdf_file,
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Upload failed");
+   fetch("https://jienote.top/article/annotateSelfArticle?article_id=" + message.articleId, {
+     method: "POST",
+     headers: {
+       Authorization:'Bearer ' + message.token,
+     },
+     body: pdf_file,
+   })
+     .then((response) => {
+       if (!response.ok) {
+         throw new Error("Upload failed");
+       }
+       return response.json();
+     })
+     .then((result) => {
+       window.parent.postMessage(
+         {
+           type: "save-success",
+           result,
+         },
+         "*"
+       );
+     })
+     .catch((error) => {
+       console.error("Upload error:", error);
+       window.parent.postMessage(
+         {
+           type: "save-fail",
+           err: error
+         },
+         "*"
+       );
+     });
+   }
+
+ /*async download(data, url, filename, message){
+    if (!data) {
+      console.error("No data provided for upload.");
+      return;
+    }
+
+    const pdf_file = new FormData();
+    pdf_file.append("article", data);
+    const ret = await axios.post(
+      `https://jienote.top/article/annotateSelfArticle?article_id=${message.articleId}`,
+      pdf_file,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       }
-      return response.json();
-    })
-    .then((result) => {
-      window.parent.postMessage(
-        {
-          type: "save-success",
-          result,
-        },
-        "*"
-      );
-    })
-    .catch((error) => {
-      console.error("Upload error:", error);
-      window.parent.postMessage(
-        {
-          type: "save-fail",
-          err: error
-        },
-        "*"
-      );
-    });
-}
+    );
+    
+  };*/
 
 }
 
