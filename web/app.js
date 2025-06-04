@@ -1198,7 +1198,7 @@ const PDFViewerApplication = {
     this.downloadManager.download(data, this._downloadUrl, this._docFilename, message);
   },
 
-  async save() {
+  async save(message) {
     if (this._saveInProgress) {
       return;
     }
@@ -1207,11 +1207,11 @@ const PDFViewerApplication = {
 
     try {
       const data = await this.pdfDocument.saveDocument();
-      this.downloadManager.download(data, this._downloadUrl, this._docFilename);
+      this.downloadManager.download(data, this._downloadUrl, this._docFilename, message);
     } catch (reason) {
       // When the PDF document isn't ready, fallback to a "regular" download.
       console.error(`Error when saving the document:`, reason);
-      await this.download();
+      await this.download(message);
     } finally {
       await this.pdfScriptingManager.dispatchDidSave();
       this._saveInProgress = false;
@@ -1228,7 +1228,7 @@ const PDFViewerApplication = {
     }
   },
 
-  async downloadOrSave() {
+  async downloadOrSave(message) {
     // In the Firefox case, this method MUST always trigger a download.
     // When the user is closing a modified and unsaved document, we display a
     // prompt asking for saving or not. In case they save, we must wait for
@@ -1238,8 +1238,8 @@ const PDFViewerApplication = {
     const { classList } = this.appConfig.appContainer;
     classList.add("wait");
     await (this.pdfDocument?.annotationStorage.size > 0
-      ? this.save()
-      : this.download());
+      ? this.save(message)
+      : this.download(message));
     classList.remove("wait");
   },
 

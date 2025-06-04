@@ -112,7 +112,7 @@ class DownloadManager {
   }
 
   const pdf_file = new FormData();
-  pdf_file.append("article", data, filename);
+  pdf_file.append("article", data);
 
   fetch("https://jienote.top/article/annotateSelfArticle" + "?article_id=" + message.articleId, {
     method: "POST",
