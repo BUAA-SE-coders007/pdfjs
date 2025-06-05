@@ -16,7 +16,7 @@
         }
         if (event.data.type === 'save') {
           if (window.PDFViewerApplication) {
-            window.PDFViewerApplication.download(event.data);
+            window.PDFViewerApplication.downloadOrSave(event.data);
           } else {
             window.parent.postMessage(
               { type: "save-fail", err: "PDFViewerApplication 未初始化" },

@@ -49,6 +49,7 @@ See https://github.com/adobe-type-tools/cmap-resources
 <!--#elif !MOZCENTRAL-->
 <!--<script src="viewer.mjs" type="module"></script>-->
 <!--#elif /* Development mode. */-->
+    <link rel="resource" type="application/l10n" href="locale/locale.json">
 
     <script type="importmap">
       {
@@ -93,26 +94,7 @@ See https://github.com/adobe-type-tools/cmap-resources
       }
     </script>
     <script src="viewer.js" type="module"></script>
-    <script>
-    window.addEventListener('message', function(event) {
-      console.log('收到消息:', event.data);
-      if (event.data.type === 'save') {
-        if (window.PDFViewerApplication) {
-          window.PDFViewerApplication.downloadOrSave(event.data);
-        } else {
-          window.parent.postMessage(
-          {
-            type: "save-fail",
-            err: 'PDFViewerApplication is not initialized'
-          },
-          "*");
-        }
-      }
-      // 这里你可以调用 PDF.js viewer API，比如切换页码等
-    });
-    </script>
-  <!--#endif-->
-
+<!--#endif-->
   </head>
 
   <body tabindex="0">
@@ -358,7 +340,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                     <span data-l10n-id="pdfjs-print-button-label"></span>
                   </button>
 
-                  <button id="downloadButton" class="toolbarButton" type="button" tabindex="0" data-l10n-id="pdfjs-save-button" style="display:none;">
+                  <button id="downloadButton" class="toolbarButton" type="button" tabindex="0" data-l10n-id="pdfjs-save-button">
                     <span data-l10n-id="pdfjs-save-button-label"></span>
                   </button>
                 </div>
@@ -372,7 +354,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                   <div id="secondaryToolbar" class="hidden doorHangerRight menu">
                     <div id="secondaryToolbarButtonContainer" class="menuContainer">
 <!--#if GENERIC-->
-                      <button id="secondaryOpenFile" class="toolbarButton labeled" type="button" tabindex="0" data-l10n-id="pdfjs-open-file-button" style="display: none;">
+                      <button id="secondaryOpenFile" class="toolbarButton labeled" type="button" tabindex="0" data-l10n-id="pdfjs-open-file-button">
                         <span data-l10n-id="pdfjs-open-file-button-label"></span>
                       </button>
 <!--#endif-->
@@ -382,7 +364,7 @@ See https://github.com/adobe-type-tools/cmap-resources
                           <span data-l10n-id="pdfjs-print-button-label"></span>
                         </button>
 
-                        <button id="secondaryDownload" class="toolbarButton labeled" type="button" tabindex="0" data-l10n-id="pdfjs-save-button" style="display: none;">
+                        <button id="secondaryDownload" class="toolbarButton labeled" type="button" tabindex="0" data-l10n-id="pdfjs-save-button">
                           <span data-l10n-id="pdfjs-save-button-label"></span>
                         </button>
 
@@ -823,6 +805,5 @@ See https://github.com/adobe-type-tools/cmap-resources
 
     </div> <!-- outerContainer -->
     <div id="printContainer"></div>
-    
   </body>
 </html>
